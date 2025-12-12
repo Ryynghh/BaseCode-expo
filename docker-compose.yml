@@ -1,0 +1,68 @@
+services:
+  # 1. Web Server (PHP + Apache)
+  web:
+    image: php:8.1-apache
+    container_name: webserver
+    ports:
+      - "8080:80"
+    volumes:
+      - ./src:/var/www/html
+    depends_on:
+      - db
+    networks:
+      - BaseCode
+    environment:
+      - DB_HOST=dbserver
+      - DB_NAME=appdb
+      - DB_USER=appuser
+      - DB_PASS=secret123
+    # Install driver database untuk PHP
+    command: /bin/sh -c "docker-php-ext-install mysqli pdo pdo_mysql && apache2-foreground"
+
+  # 2. Database Server (MariaDB)
+  db:
+    image: mariadb:latest
+    container_name: dbserver
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassq23
+      MYSQL_DATABASE: appdb
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: secret123
+    volumes:
+      - ./db_data:/var/lib/mysql
+      # PERBAIKAN: Path file SQL disesuaikan dengan struktur folder asli Anda
+      - ./src/sql/db_eximgo.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - BaseCode
+
+  # 3. Nagios Monitoring (Sesuai Referensi Worksheet 21)
+  nagios:
+    image: jasonrivers/nagios
+    container_name: nagios_container
+    volumes:
+      # KITA UBAH JADI FILE MAP LANGSUNG (Lebih kuat terhadap error path)
+      - ./nagios_conf/monitored_hosts.cfg:/opt/nagios/etc/conf.d/monitored_hosts.cfg
+    # ... (bagian bawah tetap sama)
+    ports:
+      - "8085:80"   # Saya ganti ke 8085 agar tidak bentrok
+    environment:
+      - NAGIOS_TIMEZONE=Asia/Jakarta
+    networks:
+      - BaseCode
+
+  # 4. phpMyAdmin (Opsional - Untuk Cek Data)
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: my_pma
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: dbserver
+      PMA_USER: root
+      PMA_PASSWORD: rootpassq23
+    networks:
+      - BaseCode
+
+networks:
+  BaseCode:
+    driver: bridge
