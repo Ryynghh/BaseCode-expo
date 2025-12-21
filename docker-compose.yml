@@ -37,12 +37,12 @@ services:
 
   # 3. Nagios Monitoring (Sesuai Referensi Worksheet 21)
   nagios:
-    image: jasonrivers/nagios
+    build: .
     container_name: nagios_container
     volumes:
       # KITA UBAH JADI FILE MAP LANGSUNG (Lebih kuat terhadap error path)
       - ./nagios_conf/monitored_hosts.cfg:/opt/nagios/etc/conf.d/monitored_hosts.cfg
-    # ... (bagian bawah tetap sama)
+# ... (bagian bawah tetap sama)
     ports:
       - "8085:80"   # Saya ganti ke 8085 agar tidak bentrok
     environment:
@@ -62,7 +62,16 @@ services:
       PMA_PASSWORD: rootpassq23
     networks:
       - BaseCode
+# Service 5: CLOUDFLARE TUNNEL (Jembatan ke Internet)
+  tunnel:
+    image: cloudflare/cloudflared
+    container_name: cf_tunnel
+    restart: unless-stopped
+    command: tunnel run --token eyJhIjoiMGI5OWFhYjgxZjc0NmZhN2E1MmUzYzI2MGUxMTQ3YmMiLCJ0IjoiYzViZGU5NDMtNzk3Ny00MDZlLTk1NDEtZmQzYjYwYjllOTUyIiwicyI6Ik1qSTFZMlEwT1RndE1EYzJNaTAwWmprMkxXSTFOREF0WldGbE56QTFZVFprT0RCaCJ9
+    networks:
+      - BaseCode
 
 networks:
   BaseCode:
     driver: bridge
+

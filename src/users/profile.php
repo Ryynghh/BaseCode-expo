@@ -30,7 +30,7 @@ $user = $stmt->fetch();
 <html>
 
 <head>
-    <title>Profil Saya</title>
+    <title>eximgo.my.id</title>
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 
