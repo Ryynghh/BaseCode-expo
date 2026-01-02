@@ -110,6 +110,36 @@ body {
     gap: 15px;
 }
 
+/* HAMBURGER MENU - Hidden by default */
+.hamburger-menu {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    padding: 5px;
+    z-index: 1001;
+}
+
+.hamburger-menu span {
+    width: 25px;
+    height: 3px;
+    background-color: var(--text-dark);
+    margin: 3px 0;
+    transition: 0.3s;
+    border-radius: 3px;
+}
+
+.hamburger-menu.active span:nth-child(1) {
+    transform: rotate(-45deg) translate(-5px, 6px);
+}
+
+.hamburger-menu.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger-menu.active span:nth-child(3) {
+    transform: rotate(45deg) translate(-5px, -6px);
+}
+
 /* CONTENT */
 .content-wrapper {
     padding: 30px;
@@ -290,62 +320,6 @@ body {
     color: #aaa;
 }
 
-/* RESPONSIVE */
-@media (max-width: 992px) {
-    .charts-row {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 768px) {
-
-    body {
-        overflow: auto;
-        height: auto;
-    }
-
-    .main-content {
-        height: auto;
-        overflow-y: visible;
-    }
-
-    .dashboard-container {
-        height: auto;
-        min-height: 100vh;
-        overflow: visible;
-    }
-
-    .sidebar {
-        width: 100%;
-        height: auto;
-    }
-
-    .side-nav ul {
-        display: flex;
-        overflow-x: auto;
-        padding-bottom: 10px;
-    }
-
-    .side-nav li a {
-        flex-direction: column;
-        padding: 10px;
-        font-size: 0.8rem;
-        text-align: center;
-    }
-
-    .side-nav li a i {
-        margin: 0 0 5px 0;
-    }
-
-    .brand {
-        display: none;
-    }
-
-    .cards-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
 /* LOGOUT BUTTON */
 .logout-btn {
     background-color: transparent;
@@ -360,9 +334,166 @@ body {
     height: 30px;
     transition: 0.3s;
     text-align: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .logout-btn:hover {
     background-color: var(--accent-color);
     color: var(--white);
+}
+
+/* RESPONSIVE */
+@media (max-width: 992px) {
+    .charts-row {
+        grid-template-columns: 1fr;
+    }
+
+    .cards-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        overflow: auto;
+        height: auto;
+    }
+
+    .main-content {
+        height: auto;
+        overflow-y: visible;
+    }
+
+    .dashboard-container {
+        height: auto;
+        min-height: 100vh;
+        overflow: visible;
+        flex-direction: column;
+    }
+
+    /* Show Hamburger Menu */
+    .hamburger-menu {
+        display: flex;
+    }
+
+    /* Sidebar - Hidden by default on mobile */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: -260px;
+        width: 260px;
+        height: 100vh;
+        z-index: 1000;
+        transition: left 0.3s ease;
+    }
+
+    .sidebar.active {
+        left: 0;
+    }
+
+    /* Overlay when sidebar is open */
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+    }
+
+    .sidebar-overlay.active {
+        display: block;
+    }
+
+    .side-nav ul {
+        display: flex;
+        flex-direction: column;
+        overflow-x: visible;
+        padding-bottom: 0;
+    }
+
+    .side-nav li a {
+        flex-direction: row;
+        padding: 15px 25px;
+        font-size: 0.95rem;
+        text-align: left;
+    }
+
+    .side-nav li a i {
+        margin: 0 10px 0 0;
+        width: 25px;
+    }
+
+    .brand {
+        display: flex;
+    }
+
+    /* Top Bar Mobile */
+    .top-bar {
+        padding: 15px 20px;
+    }
+
+    .top-bar h3 {
+        font-size: 1rem;
+    }
+
+    /* Content Wrapper */
+    .content-wrapper {
+        padding: 20px 15px;
+    }
+
+    /* Cards */
+    .cards-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    /* Logout Button Mobile */
+    .logout-btn {
+        width: 80px;
+        height: 35px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .top-bar {
+        padding: 12px 15px;
+    }
+
+    .top-bar h3 {
+        font-size: 0.9rem;
+    }
+
+    .content-wrapper {
+        padding: 15px 10px;
+    }
+
+    .card {
+        min-height: 140px;
+        padding: 15px;
+    }
+
+    .card-body .number {
+        font-size: 1.8rem;
+    }
+
+    .logout-btn {
+        width: 70px;
+        height: 32px;
+        font-size: 0.85rem;
+    }
+
+    .section-header h2 {
+        font-size: 1rem;
+    }
 }

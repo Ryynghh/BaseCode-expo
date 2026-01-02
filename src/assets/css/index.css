@@ -9,8 +9,10 @@
 }
 
 * {
-    padding: 0px;
-    margin: 0px;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    /* Penting untuk responsivitas */
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -18,19 +20,25 @@ body {
     background-color: var(--primary-color);
     color: var(--text-dark);
     line-height: 1.6;
+    overflow-x: hidden;
+    /* Mencegah scroll horizontal */
 }
 
+/* --- NAVIGATION --- */
 nav {
     display: flex;
     justify-content: space-between;
-    padding: 20px 40px;
+    padding: 15px 5%;
+    /* Gunakan persentase untuk padding */
     background-color: var(--primary-color);
     align-items: center;
     box-shadow: var(--shadow);
     position: sticky;
     top: 0;
     z-index: 100;
-    height: 20px;
+    height: 70px;
+    /* Tinggi fix agar lebih konsisten */
+    width: 100%;
 }
 
 nav .logo {
@@ -41,60 +49,61 @@ nav .logo {
 
 nav .logo span {
     color: var(--accent-color);
-
 }
 
 .nav-kanan {
     display: flex;
-    gap: 40px;
+    gap: 30px;
     align-items: center;
 }
 
-.pilihan li a {
-    transition: 0.3s;
-}
-
-.pilihan li a:hover {
-    color: var(--accent-color);
-    text-decoration: underline;
-}
-
-ul {
+.pilihan {
     list-style: none;
     display: flex;
     gap: 20px;
 }
 
-ul li a {
+.pilihan li a {
     color: var(--text-dark);
     font-weight: 500;
+    transition: 0.3s;
+    font-size: 0.95rem;
+    /* Ukuran font sedikit disesuaikan */
+}
 
+.pilihan li a:hover {
+    color: var(--accent-color);
 }
 
 a {
     text-decoration: none;
 }
 
+/* Tombol Auth */
+.auth {
+    display: flex;
+    gap: 10px;
+}
+
 .auth button {
-    width: 100px;
-    height: 33px;
+    padding: 8px 20px;
+    /* Gunakan padding bukan width/height fix */
     border-radius: 30px;
     transition: background 0.3s;
     text-align: center;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border: none;
 }
 
 .login {
     background-color: var(--accent-color);
-    border: none;
-    cursor: pointer;
-    font-weight: 600;
-
+    color: var(--primary-color);
 }
 
 .login a {
     color: var(--primary-color);
-    font-weight: 600;
-    font-size: 1rem;
 }
 
 .login:hover {
@@ -103,37 +112,41 @@ a {
 
 .register {
     background-color: transparent;
-    border: 2px solid var(--accent-color);
-    font-weight: 600;
-    cursor: pointer;
+    border: 2px solid var(--accent-color) !important;
+    /* Force border */
 }
 
 .register a {
     color: var(--accent-color);
-    font-size: 1rem;
-    font-weight: 600;
 }
 
 .register:hover {
     background-color: #f0f0f0;
 }
 
-/* MAIN */
+/* --- HERO SECTION --- */
 main {
     display: flex;
     justify-content: center;
     align-items: center;
-    max-width: 100%;
+    width: 100%;
     height: 500px;
+    /* Tinggi minimum untuk layar besar */
+    min-height: 400px;
+    /* Tinggi minimum responsif */
     background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../image.jpg');
     background-size: cover;
     background-position: center;
     color: var(--primary-color);
+    padding: 20px;
+    /* Padding agar teks tidak menempel di pinggir hp */
 }
 
 .hero {
-    max-width: 70%;
-    height: auto;
+    max-width: 90%;
+    /* Lebih lebar di mobile */
+    width: 800px;
+    /* Batas maksimal lebar */
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -141,26 +154,31 @@ main {
 }
 
 .hero h1 {
-    width: 600px;
     font-size: 3rem;
     margin-bottom: 20px;
+    width: 100%;
+    line-height: 1.2;
 }
 
 .hero p {
-    width: 600px;
+    font-size: 1.1rem;
+    width: 100%;
+    max-width: 600px;
 }
 
-/* CARDS */
+/* --- CARDS SECTION --- */
 .cards {
     background-color: var(--bg-light);
-    max-width: 100%;
-    height: auto;
-    padding: 50px 40px;
+    width: 100%;
+    padding: 60px 5%;
+    /* Gunakan % agar padding kanan kiri aman */
     display: flex;
     justify-content: center;
-    align-items: flex-start;
+    align-items: stretch;
+    /* Agar tinggi card sama */
     gap: 30px;
     flex-wrap: wrap;
+    /* Kunci responsif grid */
 }
 
 .card {
@@ -169,37 +187,153 @@ main {
     box-shadow: var(--shadow);
     padding: 30px;
     text-align: center;
-    flex-basis: 300px;
+    flex: 1 1 300px;
+    /* Grow, Shrink, Basis: Minimal lebar 300px */
+    max-width: 400px;
+    /* Agar tidak terlalu lebar di layar besar sendirian */
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    /* Efek hover halus */
 }
 
 .card h2 {
     margin-bottom: 15px;
+    font-size: 1.4rem;
+    color: var(--text-dark);
 }
 
-/* Tambahan untuk tentangKami dan tentang Pet */
+.card p {
+    color: var(--text-light);
+}
 
+
+/* --- RESPONSIVE MEDIA QUERIES --- */
+
+/* Tablet & Mobile (Max Width 992px) */
+@media (max-width: 992px) {
+    .nav-kanan {
+        gap: 20px;
+    }
+
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+}
+
+/* Mobile Devices (Max Width 768px) */
+@media (max-width: 768px) {
+
+    /* Navbar Adjustment */
+    nav {
+        flex-direction: column;
+        height: auto;
+        padding: 15px 20px;
+        gap: 15px;
+    }
+
+    .nav-kanan {
+        flex-direction: column;
+        width: 100%;
+        gap: 15px;
+    }
+
+    .pilihan {
+        flex-direction: column;
+        /* Menu jadi vertikal */
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        display: none;
+        /* Opsional: Bisa dibuat hamburger menu nanti */
+    }
+
+    /* Tampilkan menu jika ingin list ke bawah (hapus display:none di atas jika mau selalu tampil) */
+    /* Atau biarkan sederhana: */
+    .pilihan {
+        flex-wrap: wrap;
+        justify-content: center;
+        display: flex;
+    }
+
+    .auth {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Hero Adjustment */
+    main {
+        height: auto;
+        padding: 60px 20px;
+        min-height: 300px;
+    }
+
+    .hero h1 {
+        font-size: 2rem;
+    }
+
+    .hero p {
+        font-size: 0.95rem;
+    }
+
+    /* Cards Adjustment */
+    .cards {
+        padding: 40px 20px;
+        gap: 20px;
+    }
+
+    .card {
+        flex: 1 1 100%;
+        /* Card jadi full width di mobile */
+        max-width: 100%;
+    }
+}
+
+/* Small Mobile (Max Width 480px) */
+@media (max-width: 480px) {
+    .hero h1 {
+        font-size: 1.8rem;
+    }
+
+    .pilihan {
+        gap: 5px;
+        font-size: 0.85rem;
+    }
+
+    .auth button {
+        padding: 6px 15px;
+        font-size: 0.8rem;
+    }
+}
+
+
+/* --- CSS Tambahan Lainnya (Tentang Kami, dll) --- */
 .summary-container {
-    /* Nilai yang diubah: padding atas ditingkatkan dari 60px menjadi 100px */
-    padding: 350px 40px 60px 40px;
+    padding: 120px 20px 60px 20px;
+    /* Padding atas disesuaikan untuk mobile */
     background-color: var(--bg-light);
     display: flex;
     justify-content: center;
     align-items: center;
+    min-height: 100vh;
+    /* Agar selalu full screen minimal */
 }
 
-/* Biarkan styling .summary-card dan lainnya tetap sama */
 .summary-card {
     background-color: var(--primary-color);
     border-radius: 10px;
     box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-    padding: 40px;
+    padding: 30px;
+    /* Sedikit dikurangi untuk mobile */
     max-width: 800px;
     width: 100%;
     text-align: left;
 }
 
 .summary-card h2 {
-    font-size: 1.8rem;
+    font-size: 1.6rem;
     color: var(--accent-color);
     margin-bottom: 15px;
     border-bottom: 2px solid var(--bg-light);
@@ -207,7 +341,7 @@ main {
 }
 
 .summary-card h3 {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     color: var(--text-dark);
     margin-top: 25px;
     margin-bottom: 10px;
@@ -217,7 +351,7 @@ main {
 .summary-card ul {
     margin-bottom: 15px;
     color: var(--text-light);
-    font-size: 1rem;
+    font-size: 0.95rem;
 }
 
 .summary-card ul,
@@ -242,4 +376,63 @@ main {
     font-size: 0.9rem !important;
     border-left: 3px solid var(--accent-color);
     padding-left: 10px;
+}
+
+/* ... CSS sebelumnya tetap sama ... */
+
+/* Tambahkan Style untuk Tombol Toggle */
+.menu-toggle {
+    display: none;
+    /* Sembunyikan di layar besar (Desktop) */
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-dark);
+}
+
+/* --- MEDIA QUERY (Max Width 768px) --- */
+@media (max-width: 768px) {
+
+    /* 1. Tampilkan Tombol Burger */
+    .menu-toggle {
+        display: block;
+    }
+
+    /* 2. Sembunyikan Menu Navigasi Kanan secara Default */
+    .nav-kanan {
+        display: none;
+        /* HILANGKAN DULU */
+        width: 100%;
+        flex-direction: column;
+        align-items: center;
+        background-color: var(--primary-color);
+        padding: 20px 0;
+        border-top: 1px solid #eee;
+
+        /* Opsional: Efek animasi slide down bisa ditambahkan disini */
+        position: absolute;
+        top: 70px;
+        /* Sesuai tinggi nav */
+        left: 0;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    /* 3. Class 'active' untuk Memunculkan Menu via JS */
+    .nav-kanan.active {
+        display: flex;
+        /* MUNCULKAN SAAT DI-KLIK */
+    }
+
+    /* Styling tambahan agar rapi saat dibuka */
+    .pilihan {
+        flex-direction: column;
+        width: 100%;
+        text-align: center;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .auth {
+        flex-direction: column;
+        gap: 10px;
+    }
 }

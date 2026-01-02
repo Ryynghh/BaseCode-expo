@@ -1,40 +1,20 @@
 <?php
-// 1. LOGIKA DATABASE (Wajib Paling Atas)
 require_once '../config/database.php';
 session_start();
 
-// Cek Login
+// 1. Cek Login
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../auth/login.php");
     exit;
 }
+
 $uid = $_SESSION['user_id'];
 
-// --- LOGIKA FORMULIR FOOTER ---
-$form_status = "";
-if (isset($_POST['submit_contact'])) {
-    $fname = htmlspecialchars($_POST['first_name'] ?? '');
-    $lname = htmlspecialchars($_POST['last_name'] ?? '');
-    $email = htmlspecialchars($_POST['email'] ?? '');
-    $phone = htmlspecialchars($_POST['phone'] ?? '');
-    $msg   = htmlspecialchars($_POST['message'] ?? '');
-
-    if (!empty($fname) && !empty($email) && !empty($msg)) {
-        try {
-            $stmt = $pdo->prepare("INSERT INTO forms (first_name, last_name, email, phone, message) VALUES (?, ?, ?, ?, ?)");
-            $stmt->execute([$fname, $lname, $email, $phone, $msg]);
-            $form_status = "success";
-        } catch (Exception $e) {
-            $form_status = "error";
-        }
-    } else {
-        $form_status = "empty";
-    }
-}
-
-// --- LOGIKA KATALOG (Add to Cart) ---
+// 2. LOGIC TAMBAH KE KERANJANG
 if (isset($_POST['add_to_cart'])) {
     $pid = $_POST['product_id'];
+
+    // Cek stok
     $stmt = $pdo->prepare("SELECT stock FROM products WHERE id = ?");
     $stmt->execute([$pid]);
     $prod = $stmt->fetch();
@@ -42,77 +22,75 @@ if (isset($_POST['add_to_cart'])) {
     if ($prod && $prod['stock'] > 0) {
         try {
             $pdo->beginTransaction();
+
+            // A. Kurangi Stok
             $pdo->prepare("UPDATE products SET stock = stock - 1 WHERE id = ?")->execute([$pid]);
-            
+
+            // B. Cek apakah produk sudah ada di cart user ini
             $check = $pdo->prepare("SELECT id, quantity FROM carts WHERE user_id = ? AND product_id = ?");
             $check->execute([$uid, $pid]);
             $existing = $check->fetch();
 
             if ($existing) {
+                // Update quantity
                 $pdo->prepare("UPDATE carts SET quantity = quantity + 1 WHERE id = ?")->execute([$existing['id']]);
             } else {
+                // Insert baru
                 $pdo->prepare("INSERT INTO carts (user_id, product_id, quantity) VALUES (?, ?, 1)")->execute([$uid, $pid]);
             }
+
             $pdo->commit();
-            $msg = "Produk masuk keranjang!";
+            $msg = "Produk masuk keranjang! Stok diamankan untuk Anda.";
+
         } catch (Exception $e) {
             $pdo->rollBack();
-            $msg = "Gagal menambahkan.";
+            $msg = "Gagal menambahkan ke keranjang.";
         }
     } else {
-        $msg = "Stok habis!";
+        $msg = "Maaf, stok baru saja habis!";
     }
 }
 
-// Data Produk & Cart Count
+// 3. Ambil data produk
 $products = $pdo->query("SELECT * FROM products ORDER BY id DESC")->fetchAll();
-$stmt_count = $pdo->prepare("SELECT SUM(quantity) FROM carts WHERE user_id = ?");
-$stmt_count->execute([$uid]);
-$cart_count = $stmt_count->fetchColumn() ?: 0;
+
+// CATATAN: Kode hitung cart dihapus disini karena sudah ditangani oleh navbar.php
 ?>
 
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Katalog Produk - EximGo</title>
+    <title>eximgo.my.id</title>
+
     <link rel="stylesheet" href="../assets/css/catalog.css">
+    <link rel="stylesheet" href="../assets/css/navbar.css">
     <link rel="stylesheet" href="../assets/css/hero-banner.css">
-    <link rel="stylesheet" href="../assets/css/footer.css">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"> -->
 </head>
 
 <body>
-    <nav>
-        <div class="logo">Exim<span>Go</span> </div>
-        <div class="nav-kanan">
-            <ul class="nav-links">
-                <li><a href="tentangKami.php">TENTANG KAMI</a></li>
-                <li><a href="tentangPet.php">TENTANG PET</a></li>
-                <li><a href="">BERITA</a></li>
-                <li><a href="catalog.php" class="active">Shop</a></li>
-                <li>
-                    <a href="cart.php" class="cart-wrapper">
-                        <i class="fa-solid fa-cart-shopping"></i> Keranjang
-                        <?php if ($cart_count > 0): ?>
-                            <span class="badge-cart"><?= $cart_count ?></span>
-                        <?php endif; ?>
-                    </a>
-                </li>
-                <li><a href="profile.php">Akun</a></li>
-                <li><a href="../auth/logout.php">Logout</a></li>
-            </ul>
-        </div>
-    </nav>
 
-    <main class="container" style="padding-top: 50px; padding-bottom: 80px;">
-        
 
-        <div class="catalog-header" id="products">
-            <h2>Explore Collection</h2>
-            <p style="color:var(--text-light); margin-top:5px;">Temukan produk ekspor terbaik pilihan kami.</p>
+    <?php include '../includes/navbar.php'; ?>
+
+    <main class="container">
+
+
+        <div class="hero-banner">
+            <div class="hero-ship-image" style="background-image: url('../assets/images/uploads/kapal.jpg');"></div>
+            <div class="hero-content">
+                <div class="subtitle">Trusted Export Partner</div>
+                <h1>Premium Quality Products</h1>
+                <p>Kami menyediakan produk ekspor berkualitas tinggi dengan jaminan keamanan pengiriman internasional
+                    melalui partner logistik terpercaya.</p>
+                <a href="#products" class="hero-button">Lihat Koleksi</a>
+            </div>
+            <div class="hero-curve"></div>
         </div>
 
         <?php if (isset($msg)): ?>
@@ -123,24 +101,46 @@ $cart_count = $stmt_count->fetchColumn() ?: 0;
             </div>
         <?php endif; ?>
 
+        <div id="products" class="catalog-header" style="margin-top: 40px;">
+            <h2>Koleksi Terbaru</h2>
+        </div>
+
         <div class="grid-products">
             <?php foreach ($products as $p): ?>
                 <div class="product-card">
                     <div class="product-image-container">
-                        <img src="../assets/images/uploads/<?= $p['image'] ?? 'default.jpg' ?>" alt="<?= htmlspecialchars($p['name']) ?>">
+                        <img src="../assets/images/uploads/<?= $p['image'] ?? 'default.jpg' ?>"
+                            alt="<?= htmlspecialchars($p['name']) ?>">
                     </div>
+
                     <div class="product-info">
                         <h3><?= htmlspecialchars($p['name']) ?></h3>
-                        <div class="stock-label">Stok: <?= $p['stock'] ?></div>
+                        <div class="stock-label">
+                            <?php if ($p['stock'] > 10): ?>
+                                <span style="color:var(--accent-color);">
+                                    <i class="fa-solid fa-box"></i> Stok: <?= $p['stock'] ?>
+                                </span>
+                            <?php elseif ($p['stock'] > 0): ?>
+                                <span style="color:#ff9800;">
+                                    <i class="fa-solid fa-triangle-exclamation"></i> Sisa: <?= $p['stock'] ?>
+                                </span>
+                            <?php else: ?>
+                                <span style="color:#f44336;">Stok Habis</span>
+                            <?php endif; ?>
+                        </div>
                     </div>
+
                     <div class="product-footer">
                         <div class="price">Rp <?= number_format($p['price'], 0, ',', '.') ?></div>
+
                         <form method="POST">
                             <input type="hidden" name="product_id" value="<?= $p['id'] ?>">
                             <?php if ($p['stock'] > 0): ?>
-                                <button type="submit" name="add_to_cart" class="btn-buy">Add <i class="fa-solid fa-plus"></i></button>
+                                <button type="submit" name="add_to_cart" class="btn-buy">
+                                    <span>Add</span> <i class="fa-solid fa-plus" style="font-size:0.8rem;"></i>
+                                </button>
                             <?php else: ?>
-                                <button type="button" class="btn-buy" disabled>Habis</button>
+                                <button type="button" class="btn-buy" disabled style="background:#ccc;">Habis</button>
                             <?php endif; ?>
                         </form>
                     </div>
@@ -148,45 +148,8 @@ $cart_count = $stmt_count->fetchColumn() ?: 0;
             <?php endforeach; ?>
         </div>
     </main>
-    
-    <footer class="site-footer">
-        <div class="footer-container">
-            <div class="footer-left">
-                <h3>Form</h3>
-                <p class="footer-sub">Let us know if you got any problem, question, or even suggestion!</p>
 
-                <?php if ($form_status == 'success'): ?>
-                    <div style="background:#e8f5e9; color:#2e7d32; padding:10px; border-radius:8px; margin-bottom:15px; border:1px solid #c8e6c9;">✅ Pesan terkirim!</div>
-                <?php elseif ($form_status == 'error'): ?>
-                    <div style="background:#ffebee; color:#c62828; padding:10px; border-radius:8px; margin-bottom:15px; border:1px solid #ffcdd2;">❌ Gagal mengirim.</div>
-                <?php elseif ($form_status == 'empty'): ?>
-                    <div style="background:#fff3e0; color:#ef6c00; padding:10px; border-radius:8px; margin-bottom:15px; border:1px solid #ffe0b2;">⚠️ Isi data wajib!</div>
-                <?php endif; ?>
-
-                <form class="footer-form" method="post" action="#footer-area">
-                    <div id="footer-area"></div>
-                    <div class="row">
-                        <input type="text" name="first_name" placeholder="First Name" required>
-                        <input type="text" name="last_name" placeholder="Last Name">
-                    </div>
-                    <div class="row">
-                        <input type="email" name="email" placeholder="Mail" required>
-                        <input type="text" name="phone" placeholder="Phone">
-                    </div>
-                    <textarea name="message" rows="5" placeholder="Message" required></textarea>
-                    <button type="submit" name="submit_contact" class="footer-submit">SUBMIT</button>
-                </form>
-            </div>
-            <div class="footer-right">
-                <h3>Contact Information</h3>
-                <p class="contact-line">Jl. Kaliurang Km 14,5, Sleman, Yogyakarta 55584</p>
-                <p class="contact-line">Call Us : +62 81 334 61 00</p>
-                <div class="socials">
-                    <a href="#">facebook</a>
-                    <a href="#">instagram</a>
-                </div>
-            </div>
-        </div>
-    </footer>
+    <?php include '../includes/footer.php'; ?>
 </body>
+
 </html>

@@ -30,36 +30,6 @@ if (isset($_GET['remove'])) {
     exit;
 }
 
-// --- LOGIC CHECKOUT FINAL (STOK SUDAH AMAN, TINGGAL CATAT) ---
-if (isset($_POST['checkout_all'])) {
-    // Ambil item di keranjang
-    $stmt = $pdo->prepare("SELECT * FROM carts WHERE user_id = ?");
-    $stmt->execute([$uid]);
-    $cart_items = $stmt->fetchAll();
-
-    if (count($cart_items) > 0) {
-        $pdo->beginTransaction();
-        try {
-            foreach ($cart_items as $item) {
-                // CATAT KE TRANSAKSI SAJA
-                // (Tidak perlu kurangi stok lagi, karena sudah dikurangi saat tombol Add ditekan)
-                $pdo->prepare("INSERT INTO transactions (user_id, product_id, quantity) VALUES (?, ?, ?)")
-                    ->execute([$uid, $item['product_id'], $item['quantity']]);
-            }
-
-            // Kosongkan Keranjang
-            $pdo->prepare("DELETE FROM carts WHERE user_id = ?")->execute([$uid]);
-
-            $pdo->commit();
-            $success_msg = "Pembayaran berhasil! Barang segera dikirim.";
-        } catch (Exception $e) {
-            $pdo->rollBack();
-            $error_msg = "Terjadi kesalahan sistem: " . $e->getMessage();
-        }
-    } else {
-        $error_msg = "Keranjang Anda kosong.";
-    }
-}
 // --- TAMPILKAN DATA KERANJANG ---
 $query = "SELECT c.id as cart_id, c.quantity, p.name, p.price, p.image 
           FROM carts c 
@@ -82,7 +52,7 @@ foreach ($items as $i) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Keranjang Belanja - EximGo</title>
+    <title>eximgo.my.id</title>
     <link rel="stylesheet" href="../assets/css/cart.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
@@ -90,17 +60,7 @@ foreach ($items as $i) {
 </head>
 
 <body>
-    <header>
-        <div class="container">
-            <nav>
-                <div class="logo">EximGo</div>
-                <ul class="nav-links">
-                    <li><a href="catalog.php">Shop</a></li>
-                    <li><a href="profile.php">Akun</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+    <?php include '../includes/navbar.php'; ?>
 
     <main class="container" style="padding-top: 40px; padding-bottom: 80px;">
 
@@ -109,14 +69,7 @@ foreach ($items as $i) {
             <p style="color:#888;">Kelola barang belanjaan Anda sebelum checkout.</p>
         </div>
 
-        <?php if (isset($success_msg)): ?>
-            <div class="alert-box alert-success">
-                <i class="fa-solid fa-circle-check" style="font-size: 3rem; margin-bottom: 15px;"></i>
-                <h3>Berhasil Checkout!</h3>
-                <p><?= $success_msg ?></p>
-                <a href="catalog.php" class="btn-secondary">Belanja Lagi</a>
-            </div>
-        <?php elseif (count($items) == 0): ?>
+        <?php if (count($items) == 0): ?>
             <div class="alert-box alert-empty">
                 <i class="fa-solid fa-basket-shopping" style="font-size:4rem; color:#ddd; margin-bottom:20px;"></i>
                 <h3>Keranjang Anda Kosong</h3>
@@ -168,12 +121,10 @@ foreach ($items as $i) {
                         <span>Rp <?= number_format($grand_total) ?></span>
                     </div>
 
-                    <form method="POST">
-                        <button type="submit" name="checkout_all" class="btn-checkout"
-                            onclick="return confirm('Proses pembayaran sekarang?')">
-                            Checkout Sekarang <i class="fa-solid fa-arrow-right"></i>
-                        </button>
-                    </form>
+                    <!-- UPDATED: Redirect ke halaman checkout -->
+                    <a href="checkout.php" class="btn-checkout">
+                        Lanjut ke Pembayaran <i class="fa-solid fa-arrow-right"></i>
+                    </a>
 
                     <div style="margin-top: 20px; font-size: 0.8rem; color: #aaa; text-align: center;">
                         <i class="fa-solid fa-shield-halved"></i> Transaksi Aman & Terenkripsi

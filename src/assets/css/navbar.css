@@ -1,0 +1,143 @@
+/* --- ../assets/css/navbar.css --- */
+:root {
+    --primary-color: #ffffff;
+    --accent-color: #1cd44d;
+    /* Hijau Utama */
+    --accent-hover: #16a03b;
+    --text-dark: #333333;
+    --shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+}
+
+
+
+/* Reset dasar untuk Navbar agar tidak berantakan di file lain */
+nav * {
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 40px;
+    background-color: var(--primary-color);
+    box-shadow: var(--shadow);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    height: 70px;
+    /* Sedikit diperbesar agar lega */
+    width: 100%;
+}
+
+/* Logo Styling */
+nav .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--text-dark);
+}
+
+nav .logo a {
+    text-decoration: none;
+    color: inherit;
+}
+
+nav .logo span {
+    color: var(--accent-color);
+}
+
+/* Bagian Kanan Navbar */
+.nav-kanan {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    margin: 0;
+    padding: 0;
+    height: 26px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--text-dark);
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    color: var(--accent-color);
+}
+
+/* Badge Keranjang */
+.cart-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 25px;
+}
+
+.badge-cart {
+    background: var(--accent-color);
+    color: white;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 50%;
+    font-size: 0.7rem;
+    font-weight: 700;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: -8px;
+    right: -10px;
+    box-shadow: 0 2px 5px rgba(28, 212, 77, 0.4);
+}
+
+/* Tombol Auth (Login/Register) untuk Guest */
+.auth-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.btn-login,
+.btn-register {
+    padding: 8px 20px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.btn-login {
+    border: 1px solid var(--accent-color);
+    color: var(--accent-color);
+    background: transparent;
+}
+
+.btn-login:hover {
+    background: #f0fdf4;
+}
+
+.btn-register {
+    background: var(--accent-color);
+    color: white;
+    border: 1px solid var(--accent-color);
+}
+
+.btn-register:hover {
+    background: var(--accent-hover);
+}

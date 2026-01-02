@@ -23,7 +23,7 @@ $total_products = $stmt2->fetchColumn();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Super Admin Dashboard</title>
+    <title>eximgo.my.id</title>
     <link rel="stylesheet" href="../assets/css/dashboard.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
@@ -32,9 +32,12 @@ $total_products = $stmt2->fetchColumn();
 
 <body>
 
+    <!-- Sidebar Overlay untuk Mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
     <div class="dashboard-container">
 
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
             <div class="brand">
                 <div class="brand-text">
                     <span>EximGo Admin</span>
@@ -46,6 +49,7 @@ $total_products = $stmt2->fetchColumn();
                     <li class="active"><a href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                     <li><a href="../admin/products.php"><i class="fa-solid fa-tags"></i> Manajemen Produk</a></li>
                     <li><a href="#"><i class="fas fa-users"></i> Manajemen Member</a></li>
+                    <li><a href="../admin/form.php"><i class="fa-solid fa-envelope"></i>Manajemen Form</a></li>
                 </ul>
             </nav>
         </aside>
@@ -53,7 +57,13 @@ $total_products = $stmt2->fetchColumn();
         <main class="main-content">
 
             <header class="top-bar">
-                <div class="left-icons">
+                <div class="left-icons" style="display: flex; align-items: center; gap: 15px;">
+                    <!-- Hamburger Menu -->
+                    <div class="hamburger-menu" id="hamburgerMenu">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
                 </div>
                 <div class="right-actions">
                     <a class="logout-btn" href="../index.php">Logout</a>
@@ -97,7 +107,7 @@ $total_products = $stmt2->fetchColumn();
                             <a class="view-detail" href="">View Detail</a>
                         </div>
                         <div class="card-body">
-                            <h3>Overall Growth</h3>
+                            <h3>Total Laporan</h3>
                             <div class="number">65%</div>
                         </div>
                         <div class="card-decoration"></div>
@@ -147,6 +157,38 @@ $total_products = $stmt2->fetchColumn();
             </div>
         </main>
     </div>
+
+    <script>
+        // Toggle Sidebar untuk Mobile
+        const hamburgerMenu = document.getElementById('hamburgerMenu');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+        hamburgerMenu.addEventListener('click', function () {
+            sidebar.classList.toggle('active');
+            sidebarOverlay.classList.toggle('active');
+            hamburgerMenu.classList.toggle('active');
+        });
+
+        // Close sidebar when clicking overlay
+        sidebarOverlay.addEventListener('click', function () {
+            sidebar.classList.remove('active');
+            sidebarOverlay.classList.remove('active');
+            hamburgerMenu.classList.remove('active');
+        });
+
+        // Close sidebar when clicking menu item (optional)
+        const menuItems = document.querySelectorAll('.side-nav a');
+        menuItems.forEach(item => {
+            item.addEventListener('click', function () {
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.remove('active');
+                    sidebarOverlay.classList.remove('active');
+                    hamburgerMenu.classList.remove('active');
+                }
+            });
+        });
+    </script>
 
 </body>
 
