@@ -1,6 +1,6 @@
 <?php
 $host = 'dbserver';
-$db = getenv('DB_NAME') ?: 'appdb';
+$db = getenv('DB_NAME') ?: 'db_eximgo';
 $user = getenv('DB_USER') ?: 'root';
 $pass = getenv('DB_PASS') ?: 'rootpassq23';
 $charset = 'utf8mb4';

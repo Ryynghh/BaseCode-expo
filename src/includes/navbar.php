@@ -50,6 +50,11 @@ $current_page = basename($_SERVER['PHP_SELF']);
                         <?php endif; ?>
                     </a>
                 </li>
+                <li>
+                    <a href="my_orders.php" class="<?= $current_page == 'my_orders.php' ? 'active' : '' ?>">
+                        <i class="fa-solid fa-shopping-bag"></i> Lihat Pesanan
+                    </a>
+                </li>
                 <li><a href="profile.php" class="<?= $current_page == 'profile.php' ? 'active' : '' ?>">Akun</a></li>
                 <li><a href="../auth/logout.php" style="color: #e74c3c;">Logout</a></li>
 

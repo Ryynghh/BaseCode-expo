@@ -109,7 +109,8 @@ $products = $pdo->query("SELECT * FROM products ORDER BY id DESC")->fetchAll();
                 <ul>
                     <li><a href="../admin/dashboard.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                     <li class="active"><a href="#"><i class="fa-solid fa-tags"></i> Manajemen Produk</a></li>
-                    <li><a href="#"><i class="fas fa-users"></i> Manajemen Member</a></li>
+                    <li><a href="../admin/member.php"><i class="fas fa-users"></i> Manajemen Member</a></li>
+                    <li><a href="../admin/orders.php"><i class="fas fa-shopping-cart"></i> Manajemen Order</a></li>
                     <li><a href="../admin/form.php"><i class="fa-solid fa-envelope"></i>Manajemen
                             Form</a>
                     </li>

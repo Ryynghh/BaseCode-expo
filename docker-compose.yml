@@ -13,7 +13,7 @@ services:
       - BaseCode
     environment:
       - DB_HOST=dbserver
-      - DB_NAME=appdb
+      - DB_NAME=db_eximgo
       - DB_USER=appuser
       - DB_PASS=secret123
     # Install driver database untuk PHP
@@ -25,7 +25,7 @@ services:
     container_name: dbserver
     environment:
       MYSQL_ROOT_PASSWORD: rootpassq23
-      MYSQL_DATABASE: appdb
+      MYSQL_DATABASE: db_eximgo
       MYSQL_USER: appuser
       MYSQL_PASSWORD: secret123
     volumes:
